@@ -2,21 +2,24 @@ package main.html;
 
 import main.tokens.Token;
 import main.tokens.TokenType;
+import main.tokens.WhiteSpace;
+import main.tokens.WhiteSpaceType;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HTMLMaker {
 
-    private List<Token> tokens = new ArrayList<>();
+    private List<Token> tokens;
+    private List<WhiteSpace> whitespaces;
     private String filePath;
 
-    public HTMLMaker(List<Token> tokens, String filePath) {
+    public HTMLMaker(List<Token> tokens, List<WhiteSpace> whitespaces, String filePath) {
         this.tokens = tokens;
+        this.whitespaces = whitespaces;
         this.filePath = filePath;
     }
 
@@ -27,11 +30,16 @@ public class HTMLMaker {
         html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
 
         for (Token token : tokens) {
-            if(token.getLine() > currentLine) {
+            if (token.getLine() > currentLine) {
                 html += "</br>";
                 currentLine = currentLine + 1;
             }
-            html += crayonToken(token) + " ";
+            for (WhiteSpace ws : whitespaces) {
+                if (ws.getBeforeToken() == token.getLp()) {
+                    html += whitespaceToCode(ws.getType());
+                }
+            }
+            html += crayonToken(token);
         }
 
         html += "</div></body></html>";
@@ -44,6 +52,16 @@ public class HTMLMaker {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String whitespaceToCode(WhiteSpaceType type) {
+        switch(type) {
+            case TAB:
+                return "&nbsp;&nbsp;&nbsp;";
+            case SPACE:
+                return "&nbsp;";
+        }
+        return null;
     }
 
     /* return crayoned token */

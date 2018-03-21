@@ -1,129 +1,210 @@
 package main.scanner;
 
-import main.chars.CharType;
-import main.tokens.KeywordsMap;
-import main.tokens.Token;
-import main.tokens.TokenType;
+import main.JavaScan;
+import main.tokens.*;
 
-import java.io.*;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Scanner {
 
-    private final File source;
+    private final String source;
     private final List<Token> tokenList = new ArrayList<>();
+    private final List<WhiteSpace> whitespaces = new ArrayList<>();
     private int start = 0;
     private int current = 0;
     private int line = 1;
+    private int tokenNr = 1;
     private static final Map<String, TokenType> keywords = KeywordsMap.keywords;
 
-    public Scanner(File source) {
+    public Scanner(String source) {
         this.source = source;
     }
 
-    public void scanFile(Charset encoding) throws IOException {
-        try (
-                InputStream in = new FileInputStream(this.source);
-                Reader reader = new InputStreamReader(in, encoding);
-                Reader buffer = new BufferedReader(reader)
-        ) {
-            System.out.println(tokenize(buffer));
+    public List<Token> scanTokens() {
+        while (!isAtEnd()) {
+            start = current;
+            scanToken();
         }
+        tokenList.add(new Token("", TokenType.EOF, null, line, tokenNr));
+        return tokenList;
     }
 
-    public List<Token> tokenize(Reader reader) throws IOException {
+    private boolean isAtEnd() {
+        return current >= source.length();
+    }
 
-        String tokenValue = "";
-        CharType charType;
-        TokenType tokenType = TokenType.NONE;
-        TokenType nextTokenType = tokenType;
-        int r;
-        while ((r = reader.read()) != -1) {
-            char ch = (char) r;
-            charType = getCharType(ch);
-            switch (tokenType) {
-                case NONE:
-                    if (charType == CharType.CHAR_LETTER) {
-                        nextTokenType = TokenType.TK_IDENT;
-                    } else if (charType == CharType.CHAR_DIGIT) {
-                        nextTokenType = TokenType.TK_NUMBER;
-                    } else if (charType == CharType.CHAR_PLUS) {
-                        nextTokenType = TokenType.SYM_PLUS;
-                    } else if (charType == CharType.CHAR_MINUS) {
-                        nextTokenType = TokenType.SYM_MINUS;
-                    } else if (charType == CharType.WHITE_SPACE) {
-                        nextTokenType = TokenType.NONE;
+    private void scanToken() {
+        char c = advance();
+        switch (c) {
+            case '(':
+                addToken(TokenType.SYM_LEFT_PAREN);
+                break;
+            case ')':
+                addToken(TokenType.SYM_RIGHT_PAREN);
+                break;
+            case '{':
+                addToken(TokenType.SYM_LEFT_BRACE);
+                break;
+            case '}':
+                addToken(TokenType.SYM_RIGHT_BRACE);
+                break;
+            case ',':
+                addToken(TokenType.SYM_COMMA);
+                break;
+            case '.':
+                addToken(TokenType.SYM_DOT);
+                break;
+            case '-':
+                addToken(TokenType.SYM_MINUS);
+                break;
+            case '+':
+                addToken(TokenType.SYM_PLUS);
+                break;
+            case ';':
+                addToken(TokenType.SYM_SEMICOLON);
+                break;
+            case '*':
+                addToken(TokenType.SYM_STAR);
+                break;
+            case '!':
+                addToken(match('=') ? TokenType.SYM_BANG_EQUAL : TokenType.SYM_BANG);
+                break;
+            case '=':
+                addToken(match('=') ? TokenType.SYM_EQUAL_EQUAL : TokenType.SYM_EQUAL);
+                break;
+            case '<':
+                addToken(match('=') ? TokenType.SYM_LESS_EQUAL : TokenType.SYM_LESS);
+                break;
+            case '>':
+                addToken(match('=') ? TokenType.SYM_GREATER_EQUAL : TokenType.SYM_GREATER);
+                break;
+            case '/':
+                if (match('/')) {
+                    while (peek() != '\n' && !isAtEnd()) {
+                        advance();
                     }
-                    break;
-                case TK_IDENT:
-                    if (charType == CharType.CHAR_LETTER) {
-                        nextTokenType = getKeyword(tokenValue + ch);
-                    } else if (charType == CharType.WHITE_SPACE) {
-                        nextTokenType = TokenType.NONE;
-                    }
-                    break;
-                case TK_NUMBER:
-                    if (charType != CharType.CHAR_DIGIT) {
-                        nextTokenType = TokenType.NONE;
-                    }
-                    break;
-                case KW_ELSE:
-                    if (charType == CharType.WHITE_SPACE) {
-                        nextTokenType = TokenType.NONE;
-                    }
-                    break;
-                case KW_IF:
-                    if (charType == CharType.WHITE_SPACE) {
-                        nextTokenType = TokenType.NONE;
-                    }
-                    break;
-            }
-
-            if (nextTokenType != TokenType.NONE) {
-                tokenValue += ch;
-            } else {
-                if (!tokenValue.equals("")) {
-                    tokenList.add(new Token(tokenValue, tokenType, null, 0));
-                }
-                if (charType != CharType.WHITE_SPACE) {
-                    tokenValue = "" + ch;
                 } else {
-                    tokenValue = "";
+                    addToken(TokenType.SYM_SLASH);
                 }
+                break;
+            case ' ':
+                addWhiteSpace(WhiteSpaceType.SPACE, tokenNr);
+                break;
+            case '\t':
+                addWhiteSpace(WhiteSpaceType.TAB, tokenNr);
+                break;
+            case '\r':
+                break;
+            case '\n':
+                line++;
+                break;
+            case '"':
+                string();
+                break;
+            default:
+                if (isDigit(c)) {
+                    number();
+                } else if (isAlpha(c)) {
+                    identifier();
+                } else {
+                    JavaScan.error(line, "Unexpected character.");
+                }
+                break;
+        }
+    }
+
+    private void identifier() {
+        while (isAlphaNumeric(peek())) {
+            advance();
+        }
+        String text = source.substring(start, current);
+        TokenType type = keywords.get(text);
+        if (type == null) type = TokenType.TK_IDENT;
+        addToken(type);
+    }
+
+    private void string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') line++;
+            advance();
+        }
+        if (isAtEnd()) {
+            JavaScan.error(line, "Unterminated string.");
+            return;
+        }
+        advance();
+        String value = source.substring(start + 1, current - 1);
+        addToken(TokenType.TK_STRING, value);
+    }
+
+    private void number() {
+        while (isDigit(peek())) {
+            advance();
+        }
+        if (peek() == '.' && isDigit(peekNext())) {
+            advance();
+            while (isDigit(peek())) {
+                advance();
             }
-            tokenType = nextTokenType;
         }
-        if (!tokenValue.equals("")) {
-            tokenList.add(new Token(tokenValue, tokenType, null, 0));
-        }
-        tokenList.add(new Token("\0", TokenType.EOF, null, 0));
-
-        return tokenList;
+        addToken(TokenType.TK_NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
-    private CharType getCharType(int c) {
-        if ((c >= 97 && c <= 122) || (c >= 65 && c <= 90)) {
-            return CharType.CHAR_LETTER;
-        } else if (c >= 48 && c <= 57) {
-            return CharType.CHAR_DIGIT;
-        } else if (c == 43) {
-            return CharType.CHAR_PLUS;
-        } else if (c == 45) {
-            return CharType.CHAR_MINUS;
-        } else if (c == 32 || c == 9 || c == 10 || c == 13) { //toDo modify to differentiate white spaces
-            return CharType.WHITE_SPACE;
-        } else return CharType.NOT_SUPPORTED;
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 
-    private TokenType getKeyword(String word) {
-        return keywords.get(word) == null ? TokenType.TK_IDENT : keywords.get(word);
+    private char advance() {
+        current++;
+        return source.charAt(current - 1);
     }
 
-    public List<Token> getTokenList() {
-        return tokenList;
+    private void addToken(TokenType type) {
+        addToken(type, null);
+    }
+
+    private void addToken(TokenType type, Object literal) {
+        String text = source.substring(start, current);
+        tokenList.add(new Token(text, type, literal, line, tokenNr));
+        tokenNr = tokenNr + 1;
+    }
+
+    private void addWhiteSpace(WhiteSpaceType type, int beforeToken) {
+        whitespaces.add(new WhiteSpace(type, beforeToken));
+    }
+
+    private boolean match(char expected) {
+        if (isAtEnd()) return false;
+        if (source.charAt(current) != expected) return false;
+
+        current++;
+        return true;
+    }
+
+    private char peek() {
+        if (isAtEnd()) return '\0';
+        return source.charAt(current);
+    }
+
+    private char peekNext() {
+        if (current + 1 >= source.length()) return '\0';
+        return source.charAt(current + 1);
+    }
+
+    private boolean isAlpha(char c) {
+        return (c >= 'a' && c <= 'z') ||
+                (c >= 'A' && c <= 'Z') ||
+                c == '_';
+    }
+
+    private boolean isAlphaNumeric(char c) {
+        return isAlpha(c) || isDigit(c);
+    }
+
+    public List<WhiteSpace> getWhitespaces() {
+        return whitespaces;
     }
 
 }

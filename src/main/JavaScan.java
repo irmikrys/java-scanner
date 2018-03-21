@@ -1,8 +1,9 @@
 package main;
 
 import main.html.HTMLMaker;
-import main.scanner.StringScanner;
+import main.scanner.Scanner;
 import main.tokens.Token;
+import main.tokens.WhiteSpace;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class JavaScan {
 
-    private static boolean hadError = false;
+    static List<WhiteSpace> whitespaces = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -23,7 +24,7 @@ public class JavaScan {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HTMLMaker htmlMaker = new HTMLMaker(tokens, "../output.html");
+        HTMLMaker htmlMaker = new HTMLMaker(tokens, whitespaces, "../output.html");
         htmlMaker.generateHTML();
     }
 
@@ -42,11 +43,16 @@ public class JavaScan {
     }
 
     private static List<Token> run(String source) {
-        StringScanner scanner = new StringScanner(source);
+        Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
+        whitespaces = scanner.getWhitespaces();
 
         for (Token token : tokens) {
             System.out.println(token);
+        }
+
+        for (WhiteSpace ws : whitespaces) {
+            System.out.println(ws);
         }
 
         return tokens;

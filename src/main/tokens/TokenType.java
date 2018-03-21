@@ -21,7 +21,7 @@ public enum TokenType {
     /* single-character symbols */
     SYM_LEFT_PAREN, SYM_RIGHT_PAREN, SYM_LEFT_BRACE,
     SYM_RIGHT_BRACE, SYM_COMMA, SYM_DOT, SYM_SEMICOLON,
-    SYM_SLASH, SYM_PLUS, SYM_MINUS, SYM_STAR, SYM_DIV,
+    SYM_SLASH, SYM_PLUS, SYM_MINUS, SYM_STAR,
 
     /* one or two character symbols */
     SYM_BANG, SYM_BANG_EQUAL,
@@ -30,8 +30,5 @@ public enum TokenType {
     SYM_LESS, SYM_LESS_EQUAL,
 
     /* end of file */
-    EOF,
-
-    /* not a token type */
-    NONE
+    EOF
 }
