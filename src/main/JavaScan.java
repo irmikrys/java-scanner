@@ -1,6 +1,7 @@
-package scanner;
+package main;
 
-import tokens.Token;
+import main.scanner.StringScanner;
+import main.tokens.Token;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -20,7 +21,7 @@ public class JavaScan {
         }
     }
 
-    static void error(int line, String message) {
+    public static void error(int line, String message) {
         report(line, "", message);
     }
 

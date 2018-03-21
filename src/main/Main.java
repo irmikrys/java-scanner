@@ -1,4 +1,6 @@
-package scanner;
+package main;
+
+import main.scanner.Scanner;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package tokens;
+package main.tokens;
 
 import java.util.HashMap;
 import java.util.Map;

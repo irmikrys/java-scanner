@@ -1,8 +1,9 @@
-package scanner;
+package main.scanner;
 
-import tokens.KeywordsMap;
-import tokens.Token;
-import tokens.TokenType;
+import main.JavaScan;
+import main.tokens.KeywordsMap;
+import main.tokens.Token;
+import main.tokens.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class StringScanner {
     private int line = 1;
     private static final Map<String, TokenType> keywords = KeywordsMap.keywords;
 
-    StringScanner(String source) {
+    public StringScanner(String source) {
         this.source = source;
     }
 

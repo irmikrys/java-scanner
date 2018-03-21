@@ -1,9 +1,9 @@
-package scanner;
+package main.scanner;
 
-import chars.CharType;
-import tokens.KeywordsMap;
-import tokens.Token;
-import tokens.TokenType;
+import main.chars.CharType;
+import main.tokens.KeywordsMap;
+import main.tokens.Token;
+import main.tokens.TokenType;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -20,7 +20,7 @@ public class Scanner {
     private int line = 1;
     private static final Map<String, TokenType> keywords = KeywordsMap.keywords;
 
-    Scanner(File source) {
+    public Scanner(File source) {
         this.source = source;
     }
 

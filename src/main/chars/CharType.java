@@ -1,4 +1,4 @@
-package chars;
+package main.chars;
 
 public enum CharType {
     CHAR_LETTER,
