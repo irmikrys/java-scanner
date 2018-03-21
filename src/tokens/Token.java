@@ -16,6 +16,6 @@ public class Token {
     @Override
     public String toString() {
         return "Type: " + tokenType + ", value: " + tokenValue +
-                " literal: " + literal + ", line: " + line + "\n";
+                " literal: " + literal + ", line: " + line;
     }
 }

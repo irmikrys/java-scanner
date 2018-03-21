@@ -1,1 +1,3 @@
-else else ifif double end
+// this is a comment
+(( )){} // grouping stuff
+!*+-/=<> <= == // operators
