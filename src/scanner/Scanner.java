@@ -34,7 +34,7 @@ public class Scanner {
         String tokenValue = "";
         CharType charType;
         TokenType tokenType = TokenType.NONE;
-        TokenType currentTokenType = tokenType;
+        TokenType nextTokenType = tokenType;
         int r;
 
         while ((r = reader.read()) != -1) {
@@ -43,35 +43,35 @@ public class Scanner {
             switch (tokenType) {
                 case NONE:
                     if (charType == CharType.CHAR_LETTER) {
-                        currentTokenType = TokenType.TK_IDENT;
+                        nextTokenType = TokenType.TK_IDENT;
                     } else if (charType == CharType.CHAR_DIGIT) {
-                        currentTokenType = TokenType.TK_NUMBER;
+                        nextTokenType = TokenType.TK_NUMBER;
                     } else if (charType == CharType.CHAR_PLUS) {
-                        currentTokenType = TokenType.SYM_PLUS;
+                        nextTokenType = TokenType.SYM_PLUS;
                     } else if (charType == CharType.CHAR_MINUS) {
-                        currentTokenType = TokenType.SYM_MINUS;
+                        nextTokenType = TokenType.SYM_MINUS;
                     }
                     break;
                 case TK_IDENT:
                     if (charType == CharType.CHAR_LETTER) {
-                        currentTokenType = getKeyword(tokenValue + ch);
+                        nextTokenType = getKeyword(tokenValue + ch);
                     } else if (charType == CharType.SPACE) {
-                        currentTokenType = TokenType.NONE;
+                        nextTokenType = TokenType.NONE;
                     }
                     break;
                 case TK_NUMBER:
                     if (charType != CharType.CHAR_DIGIT) {
-                        currentTokenType = TokenType.NONE;
+                        nextTokenType = TokenType.NONE;
                     }
                     break;
                 case KW_ELSE:
                     if (charType == CharType.SPACE) {
-                        currentTokenType = TokenType.NONE;
+                        nextTokenType = TokenType.NONE;
                     }
             }
 
-            System.out.println(currentTokenType);
-            tokenType = currentTokenType;
+            System.out.println(nextTokenType);
+            tokenType = nextTokenType;
             if (tokenType != TokenType.NONE) {
                 tokenValue += ch;
             } else {
