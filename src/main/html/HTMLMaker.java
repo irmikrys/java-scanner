@@ -27,11 +27,11 @@ public class HTMLMaker {
         html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
 
         for (Token token : tokens) {
-            html += crayonToken(token) + " ";
             if(token.getLine() > currentLine) {
                 html += "</br>";
                 currentLine = currentLine + 1;
             }
+            html += crayonToken(token) + " ";
         }
 
         html += "</div></body></html>";
