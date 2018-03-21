@@ -5,7 +5,7 @@ public enum CharType {
     CHAR_DIGIT,
     CHAR_PLUS,
     CHAR_MINUS,
-    CHAR_MULTI,
+    CHAR_STAR,
     CHAR_DIV,
     SPACE,
     NOT_SUPPORTED

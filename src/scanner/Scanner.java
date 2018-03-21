@@ -109,7 +109,7 @@ public class Scanner {
             case "/":
                 return TokenType.SYM_DIV;
             case "*":
-                return TokenType.SYM_MULT;
+                return TokenType.SYM_STAR;
             default:
                 return TokenType.NONE;
         }
@@ -121,8 +121,6 @@ public class Scanner {
                 return TokenType.KW_IF;
             case "else":
                 return TokenType.KW_ELSE;
-            case "and":
-                return TokenType.KW_AND;
             default:
                 return TokenType.TK_IDENT;
         }
