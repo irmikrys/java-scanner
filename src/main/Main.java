@@ -1,5 +1,6 @@
 package main;
 
+import main.html.HTMLMaker;
 import main.scanner.Scanner;
 
 import java.io.File;
@@ -19,6 +20,9 @@ public class Main {
         } catch (IOException e) {
             System.out.println("An IOException caught while handling a file...");
         }
+        HTMLMaker htmlMaker = new HTMLMaker(scanner.getTokenList(), "../test.html");
+        htmlMaker.generateHTML();
+
     }
 
     private File getFile() {

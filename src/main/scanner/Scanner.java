@@ -99,7 +99,7 @@ public class Scanner {
         if (!tokenValue.equals("")) {
             tokenList.add(new Token(tokenValue, tokenType, null, 0));
         }
-        tokenList.add(new Token("EOF", TokenType.EOF, null, 0));
+        tokenList.add(new Token("\0", TokenType.EOF, null, 0));
 
         return tokenList;
     }
@@ -120,6 +120,10 @@ public class Scanner {
 
     private TokenType getKeyword(String word) {
         return keywords.get(word) == null ? TokenType.TK_IDENT : keywords.get(word);
+    }
+
+    public List<Token> getTokenList() {
+        return tokenList;
     }
 
 }
