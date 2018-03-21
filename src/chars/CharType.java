@@ -7,6 +7,6 @@ public enum CharType {
     CHAR_MINUS,
     CHAR_STAR,
     CHAR_DIV,
-    SPACE,
+    WHITE_SPACE,
     NOT_SUPPORTED
 }

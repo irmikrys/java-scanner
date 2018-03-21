@@ -11,6 +11,6 @@ public class Token {
 
     @Override
     public String toString(){
-        return "Type: "+tokenType+", token value: "+tokenValue;
+        return "Type: "+tokenType+", token value: "+tokenValue+"\n";
     }
 }

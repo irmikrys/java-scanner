@@ -86,12 +86,12 @@ public class Scanner {
 
     private List<Token> tokenize(Reader reader) throws IOException {
 
+        List<Token> tokenList = new ArrayList<>();
         String tokenValue = "";
         CharType charType;
         TokenType tokenType = TokenType.NONE;
         TokenType nextTokenType = tokenType;
         int r;
-
         while ((r = reader.read()) != -1) {
             char ch = (char) r;
             charType = getCharType(ch);
@@ -105,12 +105,14 @@ public class Scanner {
                         nextTokenType = TokenType.SYM_PLUS;
                     } else if (charType == CharType.CHAR_MINUS) {
                         nextTokenType = TokenType.SYM_MINUS;
+                    } else if (charType == CharType.WHITE_SPACE) {
+                        nextTokenType = TokenType.NONE;
                     }
                     break;
                 case TK_IDENT:
                     if (charType == CharType.CHAR_LETTER) {
                         nextTokenType = getKeyword(tokenValue + ch);
-                    } else if (charType == CharType.SPACE) {
+                    } else if (charType == CharType.WHITE_SPACE) {
                         nextTokenType = TokenType.NONE;
                     }
                     break;
@@ -120,34 +122,38 @@ public class Scanner {
                     }
                     break;
                 case KW_ELSE:
-                    if (charType == CharType.SPACE) {
+                    if (charType == CharType.WHITE_SPACE) {
+                        nextTokenType = TokenType.NONE;
+                    }
+                    break;
+                case KW_IF:
+                    if (charType == CharType.WHITE_SPACE) {
                         nextTokenType = TokenType.NONE;
                     }
                     break;
             }
 
-            System.out.println(nextTokenType);
-            tokenType = nextTokenType;
-
-            if (tokenType != TokenType.NONE) {
+            if (nextTokenType != TokenType.NONE) {
                 tokenValue += ch;
             } else {
-                tokenList.add(new Token(tokenValue, tokenType));
-                if (charType != CharType.SPACE) {
+                if(!tokenValue.equals("")) {
+                    tokenList.add(new Token(tokenValue, tokenType));
+                }
+                if (charType != CharType.WHITE_SPACE) {
                     tokenValue = "" + ch;
                 } else {
                     tokenValue = "";
                 }
             }
-//            System.out.println(tokenList);
+            tokenType = nextTokenType;
         }
-        tokenList.add(new Token("\0", TokenType.EOF));
+        tokenList.add(new Token(tokenValue, tokenType));
+        tokenList.add(new Token("EOF", TokenType.EOF));
+
         return tokenList;
     }
 
     private CharType getCharType(int c) {
-        System.out.println(c);
-
         if ((c >= 97 && c <= 122) || (c >= 65 && c <= 90)) {
             return CharType.CHAR_LETTER;
         } else if (c >= 48 && c <= 57) {
@@ -156,24 +162,9 @@ public class Scanner {
             return CharType.CHAR_PLUS;
         } else if (c == 45) {
             return CharType.CHAR_MINUS;
-        } else if (c == 32) {
-            return CharType.SPACE;
+        } else if (c == 32 || c == 9 || c == 10 || c == 13) { //toDo modify to differentiate white spaces
+            return CharType.WHITE_SPACE;
         } else return CharType.NOT_SUPPORTED;
-    }
-
-    private TokenType searchKeyword(String keyword) {
-        switch (keyword) {
-            case "+":
-                return TokenType.SYM_PLUS;
-            case "-":
-                return TokenType.SYM_MINUS;
-            case "/":
-                return TokenType.SYM_DIV;
-            case "*":
-                return TokenType.SYM_STAR;
-            default:
-                return TokenType.NONE;
-        }
     }
 
     private TokenType getKeyword(String word) {
