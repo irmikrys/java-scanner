@@ -13,6 +13,10 @@ public class Token {
         this.line = line;
     }
 
+    public String getTokenValue() {
+        return tokenValue;
+    }
+
     @Override
     public String toString() {
         return "Type: " + tokenType + ", value: " + tokenValue +

@@ -96,10 +96,10 @@ public class Scanner {
             }
             tokenType = nextTokenType;
         }
-        if(!tokenValue.equals("")) {
+        if (!tokenValue.equals("")) {
             tokenList.add(new Token(tokenValue, tokenType, null, 0));
         }
-        tokenList.add(new Token("EOF", TokenType.EOF, null,0));
+        tokenList.add(new Token("EOF", TokenType.EOF, null, 0));
 
         return tokenList;
     }
