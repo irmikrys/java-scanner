@@ -16,6 +16,9 @@ public class StringScanner {
     private int start = 0;
     private int current = 0;
     private int line = 1;
+    private int fieldInLine = 0;
+    private List<WhiteSpaces> whiteSpaces = new ArrayList<>();
+
     private static final Map<String, TokenType> keywords = KeywordsMap.keywords;
 
     public StringScanner(String source) {
@@ -37,6 +40,10 @@ public class StringScanner {
 
     private void scanToken() {
         char c = advance();
+        if(c != ' ' && c !='\t'){
+            fieldInLine++;
+        }
+
         switch (c) {
             case '(':
                 addToken(TokenType.SYM_LEFT_PAREN);
@@ -89,11 +96,14 @@ public class StringScanner {
                     addToken(TokenType.SYM_SLASH);
                 }
                 break;
-            case ' ':
+            case ' ': whiteSpaces.add(new WhiteSpaces(WhiteSpaces.WhiteSpaceType.SPACE, line, fieldInLine));
+                break;
             case '\r':
-            case '\t':
+                break;
+            case '\t': whiteSpaces.add(new WhiteSpaces(WhiteSpaces.WhiteSpaceType.TAB, line, fieldInLine));
                 break;
             case '\n':
+                fieldInLine = 1;
                 line++;
                 break;
             case '"':
@@ -194,4 +204,7 @@ public class StringScanner {
         return isAlpha(c) || isDigit(c);
     }
 
+    public List<WhiteSpaces> getWhiteSpaces() {
+        return whiteSpaces;
+    }
 }

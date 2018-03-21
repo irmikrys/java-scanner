@@ -2,6 +2,7 @@ package main;
 
 import main.html.HTMLMaker;
 import main.scanner.StringScanner;
+import main.scanner.WhiteSpaces;
 import main.tokens.Token;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.List;
 public class JavaScan {
 
     private static boolean hadError = false;
+    private static List<WhiteSpaces> whiteSpaces = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -23,7 +25,7 @@ public class JavaScan {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HTMLMaker htmlMaker = new HTMLMaker(tokens, "../output.html");
+        HTMLMaker htmlMaker = new HTMLMaker(tokens, "../output.html", whiteSpaces);
         htmlMaker.generateHTML();
     }
 
@@ -44,6 +46,7 @@ public class JavaScan {
     private static List<Token> run(String source) {
         StringScanner scanner = new StringScanner(source);
         List<Token> tokens = scanner.scanTokens();
+        whiteSpaces = scanner.getWhiteSpaces();
 
         for (Token token : tokens) {
             System.out.println(token);

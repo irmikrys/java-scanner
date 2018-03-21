@@ -6,6 +6,7 @@ public class Token {
     private final Object literal;
     private final int line;
 
+
     public Token(String tokenValue, TokenType tokenType, Object literal, int line) {
         this.tokenValue = tokenValue;
         this.tokenType = tokenType;

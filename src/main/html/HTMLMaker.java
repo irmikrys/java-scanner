@@ -1,5 +1,6 @@
 package main.html;
 
+import main.scanner.WhiteSpaces;
 import main.tokens.Token;
 import main.tokens.TokenType;
 
@@ -14,15 +15,18 @@ public class HTMLMaker {
 
     private List<Token> tokens = new ArrayList<>();
     private String filePath;
+    private List<WhiteSpaces> whiteSpaces = new ArrayList<>();
 
-    public HTMLMaker(List<Token> tokens, String filePath) {
+    public HTMLMaker(List<Token> tokens, String filePath, List<WhiteSpaces> whiteSpaces) {
         this.tokens = tokens;
         this.filePath = filePath;
+        this.whiteSpaces = whiteSpaces;
     }
 
     public void generateHTML() {
 
         int currentLine = 1;
+        int fieldInLine = 0;
         String html = "<html><body bgcolor=\"#3c3c3c\"><div>";
         html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
 
@@ -30,8 +34,18 @@ public class HTMLMaker {
             if(token.getLine() > currentLine) {
                 html += "</br>";
                 currentLine = currentLine + 1;
+                fieldInLine = 0;
+            }
+            while (!whiteSpaces.isEmpty() && whiteSpaces.get(0).getFollowedTokenNumber() == fieldInLine && whiteSpaces.get(0).getLine() == currentLine) {
+                if (whiteSpaces.get(0).getWhiteSpaceType() == WhiteSpaces.WhiteSpaceType.SPACE) {
+                    html += "&nbsp";
+                } else if (whiteSpaces.get(0).getWhiteSpaceType() == WhiteSpaces.WhiteSpaceType.TAB) {
+                    html += "&nbsp&nbsp&nbsp&nbsp";
+                }
+                whiteSpaces.remove(0);
             }
             html += crayonToken(token) + " ";
+            fieldInLine++;
         }
 
         html += "</div></body></html>";
