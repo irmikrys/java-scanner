@@ -22,10 +22,10 @@ public class HTMLMaker {
 
     public void generateHTML() {
 
-        String html = "<html><body><div>";
-        html += "<h1> This is a formatted output </h1>";
+        String html = "<html><body bgcolor=\"#3c3c3c\"><div>";
+        html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
 
-        for(Token token : tokens) {
+        for (Token token : tokens) {
             html += crayonToken(token) + " ";
         }
 
@@ -49,7 +49,17 @@ public class HTMLMaker {
 
     /* return what color should token have */
     private String getColor(TokenType type) {
-        return "red";
+        String stringType = type.toString();
+        if (stringType.contains("KW_")) {
+            return "orange";
+        } else if (stringType.contains("SYM_")) {
+            return "yellow";
+        } else if (stringType.contains("TK_")) {
+            return "#b0c4de";
+        } else {
+            return "red";
+        }
+
     }
 
 }
