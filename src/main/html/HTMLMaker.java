@@ -1,6 +1,7 @@
 package main.html;
 
 import main.tokens.Token;
+import main.tokens.TokenType;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,7 +26,7 @@ public class HTMLMaker {
         html += "<h1> This is a formatted output </h1>";
 
         for(Token token : tokens) {
-            html += token.getTokenValue() + " ";
+            html += crayonToken(token) + " ";
         }
 
         html += "</div></body></html>";
@@ -38,6 +39,17 @@ public class HTMLMaker {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /* return crayoned token */
+    private String crayonToken(Token token) {
+        return "<font color=\"" + getColor(token.getTokenType()) + "\">" +
+                token.getTokenValue() + "</font>";
+    }
+
+    /* return what color should token have */
+    private String getColor(TokenType type) {
+        return "red";
     }
 
 }

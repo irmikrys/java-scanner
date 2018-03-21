@@ -17,6 +17,14 @@ public class Token {
         return tokenValue;
     }
 
+    public TokenType getTokenType() {
+        return tokenType;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
     @Override
     public String toString() {
         return "Type: " + tokenType + ", value: " + tokenValue +
