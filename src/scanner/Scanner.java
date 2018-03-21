@@ -28,7 +28,7 @@ public class Scanner {
         }
     }
 
-    private static List<Token> tokenize(Reader reader) throws IOException {
+    private List<Token> tokenize(Reader reader) throws IOException {
 
         List<Token> tokenList = new ArrayList<>();
         String tokenValue = "";
@@ -68,10 +68,12 @@ public class Scanner {
                     if (charType == CharType.SPACE) {
                         nextTokenType = TokenType.NONE;
                     }
+                    break;
             }
 
             System.out.println(nextTokenType);
             tokenType = nextTokenType;
+
             if (tokenType != TokenType.NONE) {
                 tokenValue += ch;
             } else {
@@ -84,10 +86,11 @@ public class Scanner {
             }
 //            System.out.println(tokenList);
         }
+        tokenList.add(new Token("\0", TokenType.EOF));
         return tokenList;
     }
 
-    private static CharType getCharType(int c) {
+    private CharType getCharType(int c) {
         System.out.println(c);
 
         if ((c >= 97 && c <= 122) || (c >= 65 && c <= 90)) {
@@ -103,7 +106,7 @@ public class Scanner {
         } else return CharType.NOT_SUPPORTED;
     }
 
-    private static TokenType searchKeyword(String keyword) {
+    private TokenType searchKeyword(String keyword) {
         switch (keyword) {
             case "+":
                 return TokenType.SYM_PLUS;
@@ -118,7 +121,7 @@ public class Scanner {
         }
     }
 
-    private static TokenType getKeyword(String word) {
+    private TokenType getKeyword(String word) {
         switch (word) {
             case "if":
                 return TokenType.KW_IF;
