@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HTMLMaker {
@@ -26,10 +27,12 @@ public class HTMLMaker {
     public void generateHTML() {
 
         int currentLine = 1;
+        List<WhiteSpace> toRemove = new ArrayList<>();
         String html = "<html><body bgcolor=\"#3c3c3c\"><div>";
         html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
 
         for (Token token : tokens) {
+            toRemove.clear();
             if (token.getLine() > currentLine) {
                 html += "</br>";
                 currentLine = currentLine + 1;
@@ -37,13 +40,18 @@ public class HTMLMaker {
             for (WhiteSpace ws : whitespaces) {
                 if (ws.getBeforeToken() == token.getLp()) {
                     html += whitespaceToCode(ws.getType());
+                    toRemove.add(ws);
                 }
             }
+            whitespaces.removeAll(toRemove);
             html += crayonToken(token);
         }
 
         html += "</div></body></html>";
+        writeToHTML(html);
+    }
 
+    private void writeToHTML(String html) {
         File file = new File(filePath);
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
