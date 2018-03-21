@@ -11,12 +11,15 @@ import java.util.List;
 
 public class Scanner {
 
-    public Scanner() {
+    private final File source;
+
+    public Scanner(File source) {
+        this.source = source;
     }
 
-    public void handleFile(File file, Charset encoding) throws IOException {
+    public void scanFile(Charset encoding) throws IOException {
         try (
-                InputStream in = new FileInputStream(file);
+                InputStream in = new FileInputStream(this.source);
                 Reader reader = new InputStreamReader(in, encoding);
                 Reader buffer = new BufferedReader(reader)
         ) {
