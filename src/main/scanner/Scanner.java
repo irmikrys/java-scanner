@@ -192,6 +192,7 @@ public class Scanner {
         getNextChar();
         if ((current - 1) - (start + 1) > 3) {
             JavaScan.error(line, "Too may characters in one character literal");
+            return;
         }
         String value = source.substring(start + 1, current - 1);
         addToken(TokenType.TK_CHAR, value);
