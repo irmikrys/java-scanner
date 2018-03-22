@@ -113,6 +113,9 @@ public class Scanner {
             case '\'':
                 handleChar();
                 break;
+            case '@':
+                handleAnnotation();
+                break;
             default:
                 if (isDigit(c)) {
                     handleNumber();
@@ -137,6 +140,15 @@ public class Scanner {
 
     private void addWhiteSpace(WhiteSpaceType type, int beforeToken) {
         whitespaces.add(new WhiteSpace(type, beforeToken));
+    }
+
+    //FIXME check if not in the middle
+    private void handleAnnotation() {
+        while (isAlpha(checkCurrentChar())) {
+            getNextChar();
+        }
+        String value = source.substring(start, current);
+        addToken(TokenType.TK_ANNOTATION, value);
     }
 
     private void handleIdentifier() {
@@ -165,20 +177,20 @@ public class Scanner {
 
     private void handleChar() {
         while (checkCurrentChar() != '\'' && !atEnd()) {
-            if(checkCurrentChar() == '\n') {
+            if (checkCurrentChar() == '\n') {
                 JavaScan.error(line, "Unclosed character literal");
                 line++;
+//                addToken(TokenType.TK_CHAR, source.substring(start + 1, current - 1));
                 return;
             }
             getNextChar();
-            System.out.println("I am not a \''\'" + "tadam:" + checkCurrentChar());
         }
         if (atEnd()) {
             JavaScan.error(line, "Unterminated character.");
             return;
         }
         getNextChar();
-        if((current - 1) - (start + 1) > 3) {
+        if ((current - 1) - (start + 1) > 3) {
             JavaScan.error(line, "Too may characters in one character literal");
         }
         String value = source.substring(start + 1, current - 1);

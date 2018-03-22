@@ -3,11 +3,12 @@ private boolean isAlpha(char c) {
         return (c >= 'a' && c <= 'z') ||
                 (c >= 'A' && c <= 'Z') ||
                 (c == '_');
+'c
 
     }
 
 //and another comment
-
+@Override
     public WhiteSpaceType getType() {
             return "h@ndler" h@ndler;
-        } 'c
+        }

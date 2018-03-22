@@ -85,11 +85,13 @@ public class HTMLMaker {
         if (stringType.contains("KW_")) {
             return "orange";
         } else if (stringType.contains("SYM_")) {
-            return "yellow";
+            return "#9370db";
         } else if (stringType.equals("TK_IDENT") || stringType.equals("TK_NUMBER")) {
             return "#b0c4de";
         } else if (stringType.equals("TK_STRING") || stringType.equals("TK_CHAR")) {
             return "green";
+        } else if (stringType.equals("TK_ANNOTATION")) {
+            return "yellow";
         } else {
             return "red";
         }

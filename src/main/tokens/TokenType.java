@@ -16,7 +16,7 @@ public enum TokenType {
     KW_DO, KW_WHILE, KW_GOTO, KW_CONTINUE, KW_BREAK,
 
     /* literals */
-    TK_IDENT, TK_NUMBER, TK_STRING, TK_CHAR,
+    TK_IDENT, TK_NUMBER, TK_STRING, TK_CHAR, TK_ANNOTATION,
 
     /* single-character symbols */
     SYM_LEFT_PAREN, SYM_RIGHT_PAREN, SYM_LEFT_BRACE,
