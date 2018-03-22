@@ -20,7 +20,7 @@ public class JavaScan {
 
         List<Token> tokens = new ArrayList<>();
         try {
-            tokens = runFile("../Input.txt");
+            tokens = runFile("../java-scanner/resources/file/Input.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
