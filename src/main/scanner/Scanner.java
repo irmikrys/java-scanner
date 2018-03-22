@@ -23,7 +23,7 @@ public class Scanner {
     }
 
     public List<Token> scanTokens() {
-        while (!isAtEnd()) {
+        while (!atEnd()) {
             start = current;
             scanToken();
         }
@@ -31,12 +31,12 @@ public class Scanner {
         return tokenList;
     }
 
-    private boolean isAtEnd() {
+    private boolean atEnd() {
         return current >= source.length();
     }
 
     private void scanToken() {
-        char c = advance();
+        char c = getNextChar();
         switch (c) {
             case '(':
                 addToken(TokenType.SYM_LEFT_PAREN);
@@ -69,21 +69,21 @@ public class Scanner {
                 addToken(TokenType.SYM_STAR);
                 break;
             case '!':
-                addToken(match('=') ? TokenType.SYM_BANG_EQUAL : TokenType.SYM_BANG);
+                addToken(checkNextSymbol('=') ? TokenType.SYM_BANG_EQUAL : TokenType.SYM_BANG);
                 break;
             case '=':
-                addToken(match('=') ? TokenType.SYM_EQUAL_EQUAL : TokenType.SYM_EQUAL);
+                addToken(checkNextSymbol('=') ? TokenType.SYM_EQUAL_EQUAL : TokenType.SYM_EQUAL);
                 break;
             case '<':
-                addToken(match('=') ? TokenType.SYM_LESS_EQUAL : TokenType.SYM_LESS);
+                addToken(checkNextSymbol('=') ? TokenType.SYM_LESS_EQUAL : TokenType.SYM_LESS);
                 break;
             case '>':
-                addToken(match('=') ? TokenType.SYM_GREATER_EQUAL : TokenType.SYM_GREATER);
+                addToken(checkNextSymbol('=') ? TokenType.SYM_GREATER_EQUAL : TokenType.SYM_GREATER);
                 break;
             case '/':
-                if (match('/')) {
-                    while (peek() != '\n' && !isAtEnd()) {
-                        advance();
+                if (checkNextSymbol('/')) {
+                    while (checkCurrentChar() != '\n' && !atEnd()) {
+                        getNextChar();
                     }
                 } else {
                     addToken(TokenType.SYM_SLASH);
@@ -101,64 +101,18 @@ public class Scanner {
                 line++;
                 break;
             case '"':
-                string();
+                handleString();
                 break;
             default:
                 if (isDigit(c)) {
-                    number();
+                    handleNumber();
                 } else if (isAlpha(c)) {
-                    identifier();
+                    handleIdentifier();
                 } else {
                     JavaScan.error(line, "Unexpected character.");
                 }
                 break;
         }
-    }
-
-    private void identifier() {
-        while (isAlphaNumeric(peek())) {
-            advance();
-        }
-        String text = source.substring(start, current);
-        TokenType type = keywords.get(text);
-        if (type == null) type = TokenType.TK_IDENT;
-        addToken(type);
-    }
-
-    private void string() {
-        while (peek() != '"' && !isAtEnd()) {
-            if (peek() == '\n') line++;
-            advance();
-        }
-        if (isAtEnd()) {
-            JavaScan.error(line, "Unterminated string.");
-            return;
-        }
-        advance();
-        String value = source.substring(start + 1, current - 1);
-        addToken(TokenType.TK_STRING, value);
-    }
-
-    private void number() {
-        while (isDigit(peek())) {
-            advance();
-        }
-        if (peek() == '.' && isDigit(peekNext())) {
-            advance();
-            while (isDigit(peek())) {
-                advance();
-            }
-        }
-        addToken(TokenType.TK_NUMBER, Double.parseDouble(source.substring(start, current)));
-    }
-
-    private boolean isDigit(char c) {
-        return c >= '0' && c <= '9';
-    }
-
-    private char advance() {
-        current++;
-        return source.charAt(current - 1);
     }
 
     private void addToken(TokenType type) {
@@ -175,32 +129,77 @@ public class Scanner {
         whitespaces.add(new WhiteSpace(type, beforeToken));
     }
 
-    private boolean match(char expected) {
-        if (isAtEnd()) return false;
-        if (source.charAt(current) != expected) return false;
-
-        current++;
-        return true;
+    private void handleIdentifier() {
+        while (isAlpha(checkCurrentChar()) || isDigit(checkCurrentChar())) {
+            getNextChar();
+        }
+        String text = source.substring(start, current);
+        TokenType type = keywords.get(text);
+        if (type == null) type = TokenType.TK_IDENT;
+        addToken(type);
     }
 
-    private char peek() {
-        if (isAtEnd()) return '\0';
+    private void handleString() {
+        while (checkCurrentChar() != '"' && !atEnd()) {
+            if (checkCurrentChar() == '\n') line++;
+            getNextChar();
+        }
+        if (atEnd()) {
+            JavaScan.error(line, "Unterminated string.");
+            return;
+        }
+        getNextChar();
+        String value = source.substring(start + 1, current - 1);
+        addToken(TokenType.TK_STRING, value);
+    }
+
+    private void handleNumber() {
+        while (isDigit(checkCurrentChar())) {
+            getNextChar();
+        }
+        if (checkCurrentChar() == '.' && isDigit(checkNextChar())) {
+            getNextChar();
+            while (isDigit(checkCurrentChar())) {
+                getNextChar();
+            }
+        }
+        addToken(TokenType.TK_NUMBER, Double.parseDouble(source.substring(start, current)));
+    }
+
+    private char getNextChar() {
+        current++;
+        return source.charAt(current - 1);
+    }
+
+    private char checkCurrentChar() {
+        if (atEnd()) return '\0';
         return source.charAt(current);
     }
 
-    private char peekNext() {
+    private char checkNextChar() {
         if (current + 1 >= source.length()) return '\0';
         return source.charAt(current + 1);
+    }
+
+    private boolean checkNextSymbol(char expected) {
+        if (atEnd()) {
+            return false;
+        }
+        if (source.charAt(current) != expected) {
+            return false;
+        }
+        current++;
+        return true;
     }
 
     private boolean isAlpha(char c) {
         return (c >= 'a' && c <= 'z') ||
                 (c >= 'A' && c <= 'Z') ||
-                c == '_';
+                (c == '_');
     }
 
-    private boolean isAlphaNumeric(char c) {
-        return isAlpha(c) || isDigit(c);
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
     }
 
     public List<WhiteSpace> getWhitespaces() {

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class JavaScan {
 
-    static List<WhiteSpace> whitespaces = new ArrayList<>();
+    private static List<WhiteSpace> whitespaces = new ArrayList<>();
 
     public static void main(String[] args) {
 
