@@ -25,7 +25,7 @@ public class Scanner {
     public List<Token> scanTokens() {
         while (!atEnd()) {
             start = current;
-            scanToken();
+            scanToken(); //TODO write scanned token to HTML immediately
         }
         tokenList.add(new Token("", TokenType.EOF, null, line, tokenNr));
         return tokenList;
@@ -49,6 +49,12 @@ public class Scanner {
                 break;
             case '}':
                 addToken(TokenType.SYM_RIGHT_BRACE);
+                break;
+            case '[':
+                addToken(TokenType.SYM_LEFT_SQUARE);
+                break;
+            case ']':
+                addToken(TokenType.SYM_RIGHT_SQUARE);
                 break;
             case ',':
                 addToken(TokenType.SYM_COMMA);
@@ -116,7 +122,7 @@ public class Scanner {
             case '@':
                 handleAnnotation();
                 break;
-            default:
+            default: //TODO add unexpected tokens with red color to HTML
                 if (isDigit(c)) {
                     handleNumber();
                 } else if (isAlpha(c)) {
@@ -197,6 +203,7 @@ public class Scanner {
         String value = source.substring(start + 1, current - 1);
         addToken(TokenType.TK_CHAR, value);
     }
+
 
     private void handleNumber() {
         while (isDigit(checkCurrentChar())) {

@@ -26,16 +26,12 @@ public class HTMLMaker {
 
     public void generateHTML() {
 
-        int currentLine = 1;
         List<WhiteSpace> toRemove = new ArrayList<>();
         String html = "<html><body bgcolor=\"#3c3c3c\"><div>";
         html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
 
         for (Token token : tokens) {
             toRemove.clear();
-            if (token.getLine() > currentLine) {
-                currentLine = currentLine + 1;
-            }
             for (WhiteSpace ws : whitespaces) {
                 if (ws.getBeforeToken() == token.getLp()) {
                     html += whitespaceToCode(ws.getType());
@@ -86,8 +82,10 @@ public class HTMLMaker {
             return "orange";
         } else if (stringType.contains("SYM_")) {
             return "#f7d358";
-        } else if (stringType.equals("TK_IDENT") || stringType.equals("TK_NUMBER")) {
+        } else if (stringType.equals("TK_IDENT")) {
             return "#b0c4de";
+        } else if (stringType.equals("TK_NUMBER")) {
+            return "pink";
         } else if (stringType.equals("TK_STRING") || stringType.equals("TK_CHAR")) {
             return "green";
         } else if (stringType.equals("TK_ANNOTATION")) {

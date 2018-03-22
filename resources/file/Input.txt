@@ -4,11 +4,12 @@ private boolean isAlpha(char c) {
                 (c >= 'A' && c <= 'Z') ||
                 (c == '_');
 'c 3.6'
-3.4562
+3.4562.45$
     }
 
 //and another comment
 @Override
     public WhiteSpaceType getType() {
             return "h@ndler" h@ndler;
-        }
+            get tab[1];
+        } else+ 10p
