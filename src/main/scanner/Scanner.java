@@ -80,6 +80,12 @@ public class Scanner {
             case '>':
                 addToken(checkNextSymbol('=') ? TokenType.SYM_GREATER_EQUAL : TokenType.SYM_GREATER);
                 break;
+            case '|':
+                addToken(checkNextSymbol('|') ? TokenType.SYM_OR_OR : TokenType.SYM_OR);
+                break;
+            case '&':
+                addToken(checkNextSymbol('&') ? TokenType.SYM_AND_AND : TokenType.SYM_AND);
+                break;
             case '/':
                 if (checkNextSymbol('/')) {
                     while (checkCurrentChar() != '\n' && !atEnd()) {
@@ -102,6 +108,9 @@ public class Scanner {
                 break;
             case '"':
                 handleString();
+                break;
+            case '\'':
+                handleChar();
                 break;
             default:
                 if (isDigit(c)) {
@@ -151,6 +160,28 @@ public class Scanner {
         getNextChar();
         String value = source.substring(start + 1, current - 1);
         addToken(TokenType.TK_STRING, value);
+    }
+
+    private void handleChar() {
+        while (checkCurrentChar() != '\'' && !atEnd()) {
+            if(checkCurrentChar() == '\n') {
+                JavaScan.error(line, "Unclosed character literal");
+                line++;
+                return;
+            }
+            getNextChar();
+            System.out.println("I am not a \''\'" + "tadam:" + checkCurrentChar());
+        }
+        if (atEnd()) {
+            JavaScan.error(line, "Unterminated character.");
+            return;
+        }
+        getNextChar();
+        if((current - 1) - (start + 1) > 3) {
+            JavaScan.error(line, "Too may characters in one character literal");
+        }
+        String value = source.substring(start + 1, current - 1);
+        addToken(TokenType.TK_CHAR, value);
     }
 
     private void handleNumber() {

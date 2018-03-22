@@ -16,7 +16,7 @@ public enum TokenType {
     KW_DO, KW_WHILE, KW_GOTO, KW_CONTINUE, KW_BREAK,
 
     /* literals */
-    TK_IDENT, TK_NUMBER, TK_STRING,
+    TK_IDENT, TK_NUMBER, TK_STRING, TK_CHAR,
 
     /* single-character symbols */
     SYM_LEFT_PAREN, SYM_RIGHT_PAREN, SYM_LEFT_BRACE,
@@ -28,6 +28,7 @@ public enum TokenType {
     SYM_EQUAL, SYM_EQUAL_EQUAL,
     SYM_GREATER, SYM_GREATER_EQUAL,
     SYM_LESS, SYM_LESS_EQUAL,
+    SYM_OR, SYM_OR_OR, SYM_AND, SYM_AND_AND,
 
     /* end of file */
     EOF
