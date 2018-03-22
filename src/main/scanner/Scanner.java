@@ -180,7 +180,6 @@ public class Scanner {
             if (checkCurrentChar() == '\n') {
                 JavaScan.error(line, "Unclosed character literal");
                 line++;
-//                addToken(TokenType.TK_CHAR, source.substring(start + 1, current - 1));
                 return;
             }
             getNextChar();
