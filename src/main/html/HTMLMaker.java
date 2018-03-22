@@ -85,8 +85,10 @@ public class HTMLMaker {
             return "orange";
         } else if (stringType.contains("SYM_")) {
             return "yellow";
-        } else if (stringType.contains("TK_")) {
+        } else if (stringType.equals("TK_IDENT") || stringType.equals("TK_NUMBER")) {
             return "#b0c4de";
+        } else if (stringType.equals("TK_STRING") || stringType.equals("TK_CHAR")) {
+            return "green";
         } else {
             return "red";
         }
