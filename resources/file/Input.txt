@@ -5,6 +5,9 @@ private boolean isAlpha(char c) {
                 (c == '_');
 
     }
+
+//and another comment
+
     public WhiteSpaceType getType() {
             return "h@ndler" h@ndler;
         } 'c

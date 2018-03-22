@@ -104,6 +104,7 @@ public class Scanner {
             case '\r':
                 break;
             case '\n':
+                addWhiteSpace(WhiteSpaceType.ENTER, tokenNr);
                 line++;
                 break;
             case '"':

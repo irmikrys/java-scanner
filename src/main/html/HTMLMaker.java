@@ -34,7 +34,6 @@ public class HTMLMaker {
         for (Token token : tokens) {
             toRemove.clear();
             if (token.getLine() > currentLine) {
-                html += "</br>";
                 currentLine = currentLine + 1;
             }
             for (WhiteSpace ws : whitespaces) {
@@ -68,6 +67,8 @@ public class HTMLMaker {
                 return "&nbsp;&nbsp;&nbsp;";
             case SPACE:
                 return "&nbsp;";
+            case ENTER:
+                return "</br>";
         }
         return null;
     }
