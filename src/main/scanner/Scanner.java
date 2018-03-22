@@ -142,7 +142,6 @@ public class Scanner {
         whitespaces.add(new WhiteSpace(type, beforeToken));
     }
 
-    //FIXME check if not in the middle
     private void handleAnnotation() {
         while (isAlpha(checkCurrentChar())) {
             getNextChar();
@@ -157,7 +156,9 @@ public class Scanner {
         }
         String text = source.substring(start, current);
         TokenType type = keywords.get(text);
-        if (type == null) type = TokenType.TK_IDENT;
+        if (type == null) {
+            type = TokenType.TK_IDENT;
+        }
         addToken(type);
     }
 
