@@ -1,34 +1,39 @@
 package main.scanner;
 
 import main.JavaScan;
-import main.tokens.*;
+import main.html.HTMLMaker;
+import main.tokens.KeywordsMap;
+import main.tokens.Token;
+import main.tokens.TokenType;
+import main.tokens.WhiteSpaceType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Scanner {
 
     private final String source;
-    private final List<Token> tokenList = new ArrayList<>();
-    private final List<WhiteSpace> whitespaces = new ArrayList<>();
     private int start = 0;
     private int current = 0;
     private int line = 1;
     private int tokenNr = 1;
+    private String html;
+    private HTMLMaker htmlMaker = new HTMLMaker("../output.html");
     private static final Map<String, TokenType> keywords = KeywordsMap.keywords;
 
     public Scanner(String source) {
         this.source = source;
+        html = "<html><body bgcolor=\"#3c3c3c\"><div>";
+        html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
     }
 
-    public List<Token> scanTokens() {
+    public void scanTokens() {
         while (!atEnd()) {
             start = current;
-            scanToken(); //TODO write scanned token to HTML immediately
+            scanToken();
         }
-        tokenList.add(new Token("", TokenType.EOF, null, line, tokenNr));
-        return tokenList;
+        html += htmlMaker.crayonToken(new Token("", TokenType.EOF, null, line, tokenNr));
+        html += "</div></body></html>";
+        htmlMaker.writeToHTML(html);
     }
 
     private boolean atEnd() {
@@ -95,7 +100,7 @@ public class Scanner {
             case '/':
                 if (checkNextSymbol('/')) {
                     while (checkCurrentChar() != '\n' && !atEnd()) {
-                        getNextChar();
+                        getNextChar(); // TODO add comments as grey to html
                     }
                 } else {
                     addToken(TokenType.SYM_SLASH);
@@ -140,12 +145,12 @@ public class Scanner {
 
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
-        tokenList.add(new Token(text, type, literal, line, tokenNr));
+        html += htmlMaker.crayonToken(new Token(text, type, literal, line, tokenNr));
         tokenNr = tokenNr + 1;
     }
 
     private void addWhiteSpace(WhiteSpaceType type, int beforeToken) {
-        whitespaces.add(new WhiteSpace(type, beforeToken));
+        html += htmlMaker.whitespaceToCode(type);
     }
 
     private void handleAnnotation() {
@@ -252,10 +257,6 @@ public class Scanner {
 
     private boolean isDigit(char c) {
         return c >= '0' && c <= '9';
-    }
-
-    public List<WhiteSpace> getWhitespaces() {
-        return whitespaces;
     }
 
 }

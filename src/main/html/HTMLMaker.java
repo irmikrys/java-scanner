@@ -18,6 +18,10 @@ public class HTMLMaker {
     private List<WhiteSpace> whitespaces;
     private String filePath;
 
+    public HTMLMaker(String filePath) {
+        this.filePath = filePath;
+    }
+
     public HTMLMaker(List<Token> tokens, List<WhiteSpace> whitespaces, String filePath) {
         this.tokens = tokens;
         this.whitespaces = whitespaces;
@@ -46,7 +50,7 @@ public class HTMLMaker {
         writeToHTML(html);
     }
 
-    private void writeToHTML(String html) {
+    public void writeToHTML(String html) {
         File file = new File(filePath);
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
@@ -57,8 +61,8 @@ public class HTMLMaker {
         }
     }
 
-    private String whitespaceToCode(WhiteSpaceType type) {
-        switch(type) {
+    public String whitespaceToCode(WhiteSpaceType type) {
+        switch (type) {
             case TAB:
                 return "&nbsp;&nbsp;&nbsp;";
             case SPACE:
@@ -70,7 +74,7 @@ public class HTMLMaker {
     }
 
     /* return crayoned token */
-    private String crayonToken(Token token) {
+    public String crayonToken(Token token) {
         return "<font color=\"" + getColor(token.getTokenType()) + "\">" +
                 token.getTokenValue() + "</font>";
     }

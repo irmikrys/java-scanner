@@ -1,31 +1,20 @@
 package main;
 
-import main.html.HTMLMaker;
 import main.scanner.Scanner;
-import main.tokens.Token;
-import main.tokens.WhiteSpace;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JavaScan {
 
-    private static List<WhiteSpace> whitespaces = new ArrayList<>();
-
     public static void main(String[] args) {
-
-        List<Token> tokens = new ArrayList<>();
         try {
-            tokens = runFile("../java-scanner/resources/file/Input.txt");
+            runFile("../java-scanner/resources/file/Input.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HTMLMaker htmlMaker = new HTMLMaker(tokens, whitespaces, "../output.html");
-        htmlMaker.generateHTML();
     }
 
     public static void error(int line, String message) {
@@ -37,24 +26,13 @@ public class JavaScan {
                 "[line " + line + "] Error" + where + ": " + message);
     }
 
-    private static List<Token> runFile(String path) throws IOException {
+    private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
-        return run(new String(bytes, Charset.defaultCharset()));
+        run(new String(bytes, Charset.defaultCharset()));
     }
 
-    private static List<Token> run(String source) {
+    private static void run(String source) {
         Scanner scanner = new Scanner(source);
-        List<Token> tokens = scanner.scanTokens();
-        whitespaces = scanner.getWhitespaces();
-
-        for (Token token : tokens) {
-            System.out.println(token);
-        }
-
-        for (WhiteSpace ws : whitespaces) {
-            System.out.println(ws);
-        }
-
-        return tokens;
+        scanner.scanTokens();
     }
 }

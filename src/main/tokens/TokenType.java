@@ -32,5 +32,8 @@ public enum TokenType {
     SYM_OR, SYM_OR_OR, SYM_AND, SYM_AND_AND,
 
     /* end of file */
-    EOF
+    EOF,
+
+    /* error */
+    ERROR
 }
