@@ -102,6 +102,7 @@ public class Scanner {
                     while (checkCurrentChar() != '\n' && !atEnd()) {
                         getNextChar(); // TODO add comments as grey to html
                     }
+                    addToken(TokenType.COMMENT);
                 } else {
                     addToken(TokenType.SYM_SLASH);
                 }
@@ -127,12 +128,13 @@ public class Scanner {
             case '@':
                 handleAnnotation();
                 break;
-            default: //TODO add unexpected tokens with red color to HTML
+            default:
                 if (isDigit(c)) {
                     handleNumber();
                 } else if (isAlpha(c)) {
                     handleIdentifier();
                 } else {
+                    addToken(TokenType.ERROR);
                     JavaScan.error(line, "Unexpected character.");
                 }
                 break;
@@ -179,6 +181,7 @@ public class Scanner {
             getNextChar();
         }
         if (atEnd()) {
+            addToken(TokenType.ERROR);
             JavaScan.error(line, "Unterminated string.");
             return;
         }
@@ -190,6 +193,7 @@ public class Scanner {
     private void handleChar() {
         while (checkCurrentChar() != '\'' && !atEnd()) {
             if (checkCurrentChar() == '\n') {
+                addToken(TokenType.ERROR);
                 JavaScan.error(line, "Unclosed character literal");
                 line++;
                 return;
@@ -197,11 +201,13 @@ public class Scanner {
             getNextChar();
         }
         if (atEnd()) {
+            addToken(TokenType.ERROR);
             JavaScan.error(line, "Unterminated character.");
             return;
         }
         getNextChar();
         if ((current - 1) - (start + 1) > 3) {
+            addToken(TokenType.ERROR);
             JavaScan.error(line, "Too may characters in one character literal");
             return;
         }

@@ -34,6 +34,6 @@ public enum TokenType {
     /* end of file */
     EOF,
 
-    /* error */
-    ERROR
+    /* other */
+    ERROR, COMMENT
 }

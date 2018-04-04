@@ -94,6 +94,8 @@ public class HTMLMaker {
             return "green";
         } else if (stringType.equals("TK_ANNOTATION")) {
             return "yellow";
+        } else if (stringType.equals("COMMENT")) {
+            return "grey";
         } else {
             return "red";
         }
