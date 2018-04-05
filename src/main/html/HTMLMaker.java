@@ -9,7 +9,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HTMLMaker {
@@ -20,34 +19,6 @@ public class HTMLMaker {
 
     public HTMLMaker(String filePath) {
         this.filePath = filePath;
-    }
-
-    public HTMLMaker(List<Token> tokens, List<WhiteSpace> whitespaces, String filePath) {
-        this.tokens = tokens;
-        this.whitespaces = whitespaces;
-        this.filePath = filePath;
-    }
-
-    public void generateHTML() {
-
-        List<WhiteSpace> toRemove = new ArrayList<>();
-        String html = "<html><body bgcolor=\"#3c3c3c\"><div>";
-        html += "<h1 style=\"color: #9370db\"> This is a formatted output </h1>";
-
-        for (Token token : tokens) {
-            toRemove.clear();
-            for (WhiteSpace ws : whitespaces) {
-                if (ws.getBeforeToken() == token.getLp()) {
-                    html += whitespaceToCode(ws.getType());
-                    toRemove.add(ws);
-                }
-            }
-            whitespaces.removeAll(toRemove);
-            html += crayonToken(token);
-        }
-
-        html += "</div></body></html>";
-        writeToHTML(html);
     }
 
     public void writeToHTML(String html) {
