@@ -100,7 +100,7 @@ public class Scanner {
             case '/':
                 if (checkNextSymbol('/')) {
                     while (checkCurrentChar() != '\n' && !atEnd()) {
-                        getNextChar(); // TODO add comments as grey to html
+                        getNextChar();
                     }
                     addToken(TokenType.COMMENT);
                 } else {
